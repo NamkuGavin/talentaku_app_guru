@@ -9,6 +9,7 @@ class DetailLaporanCard extends StatelessWidget {
   final IconData icon;
   final bool isExpanded;
   final VoidCallback onTap;
+  final String status;
 
   const DetailLaporanCard({
     Key? key,
@@ -17,7 +18,21 @@ class DetailLaporanCard extends StatelessWidget {
     required this.icon,
     required this.isExpanded,
     required this.onTap,
+    required this.status,
   }) : super(key: key);
+
+  Color _getStatusColor() {
+    switch (status) {
+      case 'Muncul':
+        return Colors.green;
+      case 'Kurang':
+        return Colors.orange;
+      case 'Tidak Muncul':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +76,34 @@ class DetailLaporanCard extends StatelessWidget {
               ),
               SizedBox(width: AppSizes.paddingM),
               Expanded(
-                child: Text(
-                  title,
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.spaceXS),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSizes.paddingS,
+                        vertical: AppSizes.paddingXS,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _getStatusColor().withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(AppSizes.radiusS),
+                      ),
+                      child: Text(
+                        status,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: _getStatusColor(),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

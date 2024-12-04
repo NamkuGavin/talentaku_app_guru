@@ -21,7 +21,11 @@ class CreateLaporanController extends GetxController {
     ),
     LaporanSection(
       title: 'Kegiatan Inti',
-      forms: [LaporanFormModel()],
+      forms: [
+        LaporanFormModel(),
+        LaporanFormModel(),
+        LaporanFormModel(),
+      ],
     ),
     LaporanSection(
       title: 'Snack',

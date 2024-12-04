@@ -6,7 +6,7 @@ class LaporanFormModel {
 
   LaporanFormModel({
     this.kegiatan = '',
-    this.hasil = 'Aktif',
+    this.hasil = 'Muncul',
     this.catatan = '',
     this.photos = const [],
   });
@@ -21,5 +21,9 @@ class LaporanSection {
     required this.forms,
   });
 
-  static List<String> hasilOptions = ['Aktif', 'Kurang', 'Belum Aktif'];
-} 
+  static const List<String> hasilOptions = [
+    'Muncul',
+    'Kurang',
+    'Tidak Muncul',
+  ];
+}

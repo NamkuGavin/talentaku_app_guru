@@ -60,9 +60,22 @@ class LaporanFormSection extends StatelessWidget {
                   hintStyle: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textPrimary.withOpacity(0.5),
                   ),
+                  errorStyle: AppTextStyles.bodySmall.copyWith(
+                    color: Colors.red,
+                  ),
                 ),
                 style: AppTextStyles.bodyMedium,
                 maxLines: null,
+                validator: (value) {
+                  // Make validation required only for first card of Kegiatan Inti
+                  // or for other sections
+                  if (title != 'Kegiatan Inti' || i == 0) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi kegiatan terlebih dahulu';
+                    }
+                  }
+                  return null;
+                },
                 onChanged: (value) => onKegiatanChanged(i, value),
               ),
               Divider(color: AppColors.primary.withOpacity(0.2)),
