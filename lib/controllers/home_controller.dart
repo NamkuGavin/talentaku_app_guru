@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:talentaku_app_guru/models/broadcast_event.dart';
 import 'package:talentaku_app_guru/models/categories_event.dart';
@@ -21,13 +22,10 @@ class HomeController extends GetxController {
       image: 'images/boy1.png',
     ),
     CategoryEvent(
-      title: 'Program Tambahan',
+      title: 'Fitur Tambahan',
       image: 'images/boy2.png',
     ),
-    CategoryEvent(
-      title: 'Laporan Pembelajaran',
-      image: 'images/boy1.png',
-    ),
+
   ];
 
   List<ClassEvent> classEvents = [
@@ -38,26 +36,31 @@ class HomeController extends GetxController {
     ),
   ];
 
-  List<Map<String, String>> programDetails = [
+
+  List<Map<String, dynamic>> schoolFeatures = [
     {
-      'title': 'Terapi Wicara',
-      'description': 'Lorem ipsum dolor sit amet...',
-      'image': 'images/terapiwicara.png',
+      'title': 'Laporan Progress Siswa',
+      'description': 'Pantau perkembangan siswa secara real-time dengan laporan digital yang mudah diakses',
+      'icon': Icons.assessment_outlined,
+      'color': Color(0xFF6C63FF),
     },
     {
-      'title': 'Terapi Wicara',
-      'description': 'Lorem ipsum dolor sit amet...',
-      'image': 'images/terapiwicara.png',
+      'title': 'Aktivitas di Rumah',
+      'description': 'Aktivitas edukatif yang menyenangkan untuk dilakukan bersama orang tua di rumah',
+      'icon': Icons.home_outlined,
+      'color': Color(0xFF00C853),
     },
     {
-      'title': 'Terapi Wicara',
-      'description': 'Lorem ipsum dolor sit amet...',
-      'image': 'images/terapiwicara.png',
+      'title': 'Program Sekolah',
+      'description': 'Informasi lengkap tentang layanan dan program tambahan sekolah',
+      'icon': Icons.school_outlined,
+      'color': Color(0xFFFF6B6B),
     },
     {
-      'title': 'Terapi Wicara',
-      'description': 'Lorem ipsum dolor sit amet...',
-      'image': 'images/terapiwicara.png',
+      'title': 'Pengumuman & Agenda',
+      'description': 'Dapatkan informasi terkini tentang kegiatan dan agenda sekolah',
+      'icon': Icons.campaign_outlined,
+      'color': Color(0xFFFFA726),
     },
   ];
 
