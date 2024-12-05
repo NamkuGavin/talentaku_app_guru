@@ -7,6 +7,7 @@ import 'package:talentaku_app_guru/controllers/create_laporan_controller.dart';
 import 'package:talentaku_app_guru/widgets/date_semester_row.dart';
 import 'package:talentaku_app_guru/widgets/laporan_form_section.dart';
 import 'package:talentaku_app_guru/widgets/catatan_section.dart';
+import 'package:talentaku_app_guru/widgets/photo_upload.dart';
 import 'package:talentaku_app_guru/widgets/photo_upload_section.dart';
 import 'package:talentaku_app_guru/widgets/submit_button.dart';
 import 'package:talentaku_app_guru/widgets/info_popup.dart';
@@ -62,7 +63,9 @@ class CreateLaporanScreen extends StatelessWidget {
                 onChanged: (value) => controller.catatan.value = value,
               ),
               SizedBox(height: AppSizes.spaceL),
-              PhotoUploadSection(),
+              PhotoUpload(
+                onChanged: (value) => controller.uploadphoto.value = value,
+              ),
               SizedBox(height: AppSizes.spaceXL),
               SubmitButton(
                 onPressed: () => _showConfirmationDialog(context, controller),

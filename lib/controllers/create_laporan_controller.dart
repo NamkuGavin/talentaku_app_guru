@@ -6,14 +6,13 @@ import 'package:talentaku_app_guru/models/laporan_form_model.dart';
 class CreateLaporanController extends GetxController {
   final Map<String, String> student;
   final formKey = GlobalKey<FormState>();
-  
+
   CreateLaporanController({required this.student});
 
   final selectedDate = DateTime.now().obs;
   final selectedSemester = 'Semester 1'.obs;
   final List<String> semesters = ['Semester 1', 'Semester 2'];
 
-  // Sections dengan form fields kosong
   final sections = [
     LaporanSection(
       title: 'Kegiatan Awal',
@@ -38,6 +37,15 @@ class CreateLaporanController extends GetxController {
   ].obs;
 
   final catatan = ''.obs;
+  var uploadphoto = ''.obs;
+  var isValidLink = true;
+
+  void validateLink(String value) {
+    isValidLink = value.startsWith('https://drive.google.com/');
+    uploadphoto.value = value;
+    update();
+  }
+
   final selectedPhotos = <String>[].obs;
 
   String get formattedDate => DateFormat('dd/MM/yyyy').format(selectedDate.value);
@@ -79,9 +87,8 @@ class CreateLaporanController extends GetxController {
     }
   }
 
-  // Tambahkan method untuk update kegiatan
   void updateKegiatan(int sectionIndex, int formIndex, String value) {
     sections[sectionIndex].forms[formIndex].kegiatan = value;
     sections.refresh();
   }
-} 
+}
