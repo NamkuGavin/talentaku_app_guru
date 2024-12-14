@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:talentaku_app_guru/apiModels/user_model.dart';
+import 'package:talentaku_app_guru/apiservice/api_Service.dart';
 import 'package:talentaku_app_guru/controllers/home_controller.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
@@ -14,19 +16,59 @@ import '../views/login/login.dart';
 
 class LoginController extends GetxController {
   var uploadedImages = <String>[].obs;
-
-  // Login model for state management
   var loginModel = LoginModel().obs;
+  var isImagePicked = false.obs;
+  var profileImage = ''.obs;
+  var user = Rxn<UserModel>();
+  var isLoading = false.obs;
 
-  // Controllers for username and password
+@override
+  void onInit() {
+    super.onInit();
+    usernameController.addListener(updateCredentials);
+    passwordController.addListener(updateCredentials);
+  }
+
+  Future<void> login(
+      BuildContext context, String username, String password) async {
+    isLoading.value = true;
+    isLoading.refresh();
+
+    try {
+      final response = await ApiService.login(username, password);
+      if (response.containsKey('data')) {
+        // Create user model from data
+        final userData = Map<String, dynamic>.from(response['data']);
+        // Add token and fcm_token to userData
+        userData['token'] = response['token'];
+        userData['fcm_token'] = response['fcm_token'];
+
+        user.value = UserModel.fromJson(userData);
+
+        if (user.value?.photo != null) {
+          profileImage.value = user.value!.photo!;
+        }
+
+        Get.snackbar('Success', 'Login Successful');
+        Get.offAll(() => LoginPickImage());
+      } else {
+        Get.snackbar('Error', 'Invalid username or password');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Invalid username or password');
+    } finally {
+      isLoading.value = false;
+      isLoading.refresh();
+    }
+  }
+
+
+
+
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  // Observable for image picked state
-  var isImagePicked = false.obs;
-  var profileImage = ''.obs;
-
-  // Function to create a CustomTextPair model
   CustomTextPairModel getPair() {
     return CustomTextPairModel(
       primaryText: "Selamat Datang",
@@ -43,7 +85,7 @@ class LoginController extends GetxController {
     final homeController = Get.find<HomeController>();
     return CustomTextPairModel(
       primaryText: homeController.userName,
-      secondaryText: "Siswa KB",
+      secondaryText: homeController.roles,
       primaryStyle: TextStyle(
           fontWeight: FontWeight.bold, fontSize: 24, color: AppColors.textDark),
       secondaryStyle: TextStyle(fontSize: 16, color: AppColors.primary),
@@ -200,12 +242,6 @@ class LoginController extends GetxController {
     );
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    usernameController.addListener(updateCredentials);
-    passwordController.addListener(updateCredentials);
-  }
 
   void updateCredentials() {
     loginModel.value.updateLoginState(
@@ -214,25 +250,15 @@ class LoginController extends GetxController {
     );
   }
 
-  // Update the isValid function to check if username and password are at least 8 characters
-  bool isValid() {
-    return usernameController.text.length >= 8 &&
-        passwordController.text.length >= 8 &&
-        loginModel.value.isValid;
-  }
+
 
   void onLoginPressed(BuildContext context) {
-    if (isValid()) {
-      Get.to(() => LoginPickImage());
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+    if (username.isNotEmpty && password.isNotEmpty) {
+      login(context, username, password);
     } else {
-      Get.snackbar(
-        'Error',
-        'Username dan password harus diisi dan minimal 8 karakter!',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
-        margin: const EdgeInsets.all(AppSizes.paddingXL),
-      );
+      Get.snackbar('Error', 'Please fill all fields');
     }
   }
 
@@ -243,7 +269,9 @@ class LoginController extends GetxController {
     profileImage.value = '';
   }
 
-  void onLogoutPressed(BuildContext context) {
+  void onLogoutPressed(BuildContext context) async {
+    await ApiService.removeToken(); // Remove the stored token
+    resetForm();
     Get.snackbar(
       'Anda Berhasil Logout',
       'Anda telah keluar dari akun Anda.',
@@ -252,14 +280,15 @@ class LoginController extends GetxController {
       snackPosition: SnackPosition.TOP,
       margin: const EdgeInsets.all(AppSizes.paddingXL),
     );
-    resetForm();
     Get.offAll(() => LoginScreen());
   }
 
   @override
   void onClose() {
-    usernameController.dispose();
-    passwordController.dispose();
+    // Hapus listener sebelum dispose
+    usernameController.removeListener(updateCredentials);
+    passwordController.removeListener(updateCredentials);
+
     super.onClose();
   }
 }

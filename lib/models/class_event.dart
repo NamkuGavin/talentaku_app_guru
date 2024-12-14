@@ -3,5 +3,9 @@ class ClassEvent {
   final String ageRange;
   final String image;
 
-  ClassEvent({required this.groupName, required this.ageRange, required this.image});
+  ClassEvent({
+    required this.groupName,
+    required this.ageRange,
+    required this.image,
+  });
 }

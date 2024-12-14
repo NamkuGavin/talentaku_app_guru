@@ -8,14 +8,12 @@ import 'package:talentaku_app_guru/widgets/info_popup.dart';
 
 class FeatureCard extends StatelessWidget {
   final String title;
-  final String description;
   final IconData icon;
   final Color color;
 
   const FeatureCard({
     Key? key,
     required this.title,
-    required this.description,
     required this.icon,
     this.color = const Color(0xFF6C63FF),
   }) : super(key: key);
@@ -48,33 +46,22 @@ class FeatureCard extends StatelessWidget {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: EdgeInsets.all(AppSizes.paddingM),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(AppSizes.radiusM),
-              ),
-              child: Icon(
-                icon,
-                color: color,
-                size: AppSizes.iconXL,
-              ),
+            Icon(
+              icon,
+              size: 32,
+              color: color,
             ),
-            SizedBox(height: AppSizes.spaceM),
+            SizedBox(height: AppSizes.spaceS),
             Text(
               title,
-              style: AppTextStyles.heading3,
-            ),
-            SizedBox(height: AppSizes.spaceXS),
-            Text(
-              description,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textPrimary.withOpacity(0.7),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:talentaku_app_guru/constants/app_colors.dart';
 import 'package:talentaku_app_guru/constants/app_text_styles.dart';
 import 'package:talentaku_app_guru/constants/app_sizes.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailLaporanCard extends StatelessWidget {
   final String title;
-  final String content;
+  final dynamic content;
   final IconData icon;
   final bool isExpanded;
   final VoidCallback onTap;
@@ -23,14 +24,27 @@ class DetailLaporanCard extends StatelessWidget {
 
   Color _getStatusColor() {
     switch (status) {
-      case 'Muncul':
+      case '1':
         return Colors.green;
-      case 'Kurang':
+      case '2':
         return Colors.orange;
-      case 'Tidak Muncul':
+      case '3':
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+
+  String _getStatusText() {
+    switch (status) {
+      case '1':
+        return 'Muncul';
+      case '2':
+        return 'Kurang';
+      case '3':
+        return 'Tidak Muncul';
+      default:
+        return '';
     }
   }
 
@@ -85,39 +99,95 @@ class DetailLaporanCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: AppSizes.spaceXS),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSizes.paddingS,
-                        vertical: AppSizes.paddingXS,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getStatusColor().withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(AppSizes.radiusS),
-                      ),
-                      child: Text(
-                        status,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: _getStatusColor(),
-                          fontWeight: FontWeight.w600,
+                    if (title != 'Unggah Foto') ...[
+                      SizedBox(height: AppSizes.spaceXS),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.paddingS,
+                          vertical: AppSizes.paddingXS,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _getStatusColor().withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(AppSizes.radiusS),
+                        ),
+                        child: Text(
+                          _getStatusText(),
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: _getStatusColor(),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
             ],
           ),
           children: [
-            Text(
-              content,
-              style: AppTextStyles.bodyMedium.copyWith(
-                height: 1.5,
+            if (title == 'Kegiatan Inti' && content is List) ...[
+              _buildKegiatanIntiContent(List<Map<String, dynamic>>.from(content))
+            ] else if (title == 'Unggah Foto' && content is String) ...[
+              _buildPhotoContent(content)
+            ] else ...[
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingL),
+                child: Text(
+                  content.toString(),
+                  style: AppTextStyles.bodyMedium,
+                ),
               ),
-            ),
+            ],
+            SizedBox(height: AppSizes.spaceM),
           ],
           onExpansionChanged: (_) => onTap(),
           initiallyExpanded: isExpanded,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildKegiatanIntiContent(List<Map<String, dynamic>> kegiatanList) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: kegiatanList.asMap().entries.map((entry) {
+        int index = entry.key + 1;
+        Map<String, dynamic> kegiatan = entry.value;
+        return Padding(
+          padding: EdgeInsets.only(bottom: AppSizes.spaceM),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Kegiatan $index',
+                style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: AppSizes.spaceS),
+              Text(
+                'Kegiatan: ${kegiatan['kegiatan']}',
+                style: AppTextStyles.bodyMedium
+              ),
+              SizedBox(height: AppSizes.spaceXS),
+              Text(
+                'Hasil: ${kegiatan['hasil']}',
+                style: AppTextStyles.bodyMedium,
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildPhotoContent(String photoUrl) {
+    return InkWell(
+      onTap: () {
+        launchUrl(Uri.parse(photoUrl));
+      },
+      child: Text(
+        photoUrl,
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.blue,
+          decoration: TextDecoration.underline,
         ),
       ),
     );

@@ -11,8 +11,10 @@ class ReusableButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final double? fontSize;
+  final bool isLoading; // Add this parameter
 
-  const ReusableButton({
+  const 
+  ReusableButton({
     super.key,
     required this.buttonText,
     required this.onPressed,
@@ -22,17 +24,16 @@ class ReusableButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.fontSize,
+    this.isLoading = false, // Default value is false
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: isFullWidth
-          ? double.infinity
-          : null, // This is controlled by the parent widget
+      width: isFullWidth ? double.infinity : null, // This is controlled by the parent widget
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.secondary,
+          backgroundColor: backgroundColor ?? AppColors.primary,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.radiusXL),
@@ -40,22 +41,26 @@ class ReusableButton extends StatelessWidget {
           minimumSize: Size(0, height),
         ),
         onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              buttonText,
-              style: TextStyle(
-                color: textColor ?? AppColors.textLight,
-                fontSize: fontSize ?? 18,
+        child: isLoading
+            ? CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.textLight),
+              ) // Show loading indicator
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    buttonText,
+                    style: TextStyle(
+                      color: textColor ?? AppColors.textLight,
+                      fontSize: fontSize ?? 18,
+                    ),
+                  ),
+                  if (icon != null) ...[
+                    const SizedBox(width: AppSizes.paddingS),
+                    Icon(icon, color: textColor ?? AppColors.textLight, size: 20),
+                  ]
+                ],
               ),
-            ),
-            if (icon != null) ...[
-              const SizedBox(width: AppSizes.paddingS),
-              Icon(icon, color: textColor ?? AppColors.textLight, size: 20),
-            ]
-          ],
-        ),
       ),
     );
   }

@@ -44,23 +44,19 @@ class ProfileScreen extends StatelessWidget {
 
                       const SizedBox(height: AppSizes.spaceXS),
 
-                      // Row untuk NIS dan Kelompok
+                      // NIS dan Kelompok dalam Column
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingXL),
-                        child: Row(
+                        child: Column(
                           children: [
-                            Expanded(
-                              child: TextPairWidget(
-                                model: profileController.getTextPair('NIS'),
-                                boxStyle: BoxStyle.border,
-                              ),
+                            TextPairWidget(
+                              model: profileController.getTextPair('NIS'),
+                              boxStyle: BoxStyle.border,
                             ),
-                            SizedBox(width: AppSizes.spaceXS),
-                            Expanded(
-                              child: TextPairWidget(
-                                model: profileController.getTextPair('Kelompok'),
-                                boxStyle: BoxStyle.border,
-                              ),
+                            SizedBox(height: AppSizes.spaceS),
+                            TextPairWidget(
+                              model: profileController.getTextPair('Kelompok'),
+                              boxStyle: BoxStyle.border,
                             ),
                           ],
                         ),

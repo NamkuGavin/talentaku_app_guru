@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:talentaku_app_guru/constants/app_colors.dart';
 import 'package:talentaku_app_guru/constants/app_sizes.dart';
 import 'package:talentaku_app_guru/constants/app_text_styles.dart';
+import 'package:talentaku_app_guru/views/laporan_siswa/detail_siswa_screen.dart';
 
 class StudentsGrid extends StatelessWidget {
   final List<Map<String, String>> students;
@@ -13,35 +15,29 @@ class StudentsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 160,
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 2.5,
-          crossAxisSpacing: AppSizes.spaceM,
-          mainAxisSpacing: AppSizes.spaceM,
-        ),
-        itemCount: students.length,
-        itemBuilder: (context, index) {
-          return Container(
+    return ListView.separated(
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingXL),
+      itemCount: students.length,
+      separatorBuilder: (context, index) => SizedBox(height: AppSizes.spaceM),
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            Get.to(() => DetailSiswaScreen(student: students[index]));
+          },
+          child: Container(
+            padding: EdgeInsets.all(AppSizes.paddingL),
             decoration: BoxDecoration(
-              color: AppColors.textLight.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(AppSizes.radiusM),
+              color: AppColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppSizes.radiusL),
             ),
             child: Row(
               children: [
                 Container(
                   width: 45,
                   height: 45,
-                  margin: EdgeInsets.all(AppSizes.paddingS),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.textLight,
-                      width: 2,
-                    ),
-                    color: AppColors.secondaryLight,
+                    color: AppColors.primary.withOpacity(0.2),
                   ),
                   child: Icon(
                     Icons.person,
@@ -49,37 +45,40 @@ class StudentsGrid extends StatelessWidget {
                     size: AppSizes.iconL,
                   ),
                 ),
+                SizedBox(width: AppSizes.spaceM),
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: AppSizes.paddingS),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          students[index]['name']!,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textLight,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        students[index]['name']!,
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
                         ),
-                        Text(
-                          'Siswa',
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textLight.withOpacity(0.8),
-                          ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: AppSizes.spaceXS),
+                      Text(
+                        'Siswa',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  color: AppColors.primary,
+                  size: AppSizes.iconL,
                 ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
-} 
+}

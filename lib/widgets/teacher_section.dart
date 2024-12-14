@@ -8,45 +8,51 @@ class TeacherSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.textLight,
-              width: 2,
+    return Container(
+      padding: EdgeInsets.all(AppSizes.paddingL),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppSizes.radiusL),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primary.withOpacity(0.2),
             ),
-            color: AppColors.secondaryLight,
+            child: Icon(
+              Icons.school,
+              color: AppColors.primary,
+              size: AppSizes.iconXL,
+            ),
           ),
-          child: Icon(
-            Icons.school,
-            color: AppColors.primary,
-            size: AppSizes.iconXL,
+          SizedBox(width: AppSizes.spaceM),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Guru Kelas',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                Text(
+                  'Bu Sekar',
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(width: AppSizes.spaceM),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Guru Kelas',
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textLight.withOpacity(0.8),
-              ),
-            ),
-            Text(
-              'Bu Sekar',
-              style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.textLight,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ],
+        
+        ],
+      ),
     );
   }
-} 
+}

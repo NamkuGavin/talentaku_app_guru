@@ -14,7 +14,7 @@ class DetailLaporanEvent {
 
 class LaporanSection {
   final String title;
-  final String content;
+  final dynamic content;
   final bool isExpanded;
   final String status;
 
@@ -22,13 +22,13 @@ class LaporanSection {
     required this.title,
     required this.content,
     this.isExpanded = false,
-    this.status = 'Muncul',  // Set default value
+    this.status = 'Muncul',  
   });
 
   // Add copyWith method for easier state updates
   LaporanSection copyWith({
     String? title,
-    String? content,
+    dynamic content,
     bool? isExpanded,
     String? status,
   }) {

@@ -47,7 +47,6 @@ class DetailLaporanScreen extends StatelessWidget {
                             ),
                             onPressed: () => Get.back(),
                           ),
-                          // SizedBox(width: AppSizes.spaceS),
                           Text(
                             'Laporan Harian',
                             style: AppTextStyles.heading1.copyWith(

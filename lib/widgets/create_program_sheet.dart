@@ -1,20 +1,26 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:talentaku_app_guru/apiModels/program_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:talentaku_app_guru/constants/app_colors.dart';
 import 'package:talentaku_app_guru/constants/app_sizes.dart';
 import 'package:talentaku_app_guru/constants/app_text_styles.dart';
 
-class ProgramDetailSheet extends StatelessWidget {
-  final Program program; // Ganti ProgramEvent menjadi Program
+class CreateProgramSheet extends StatelessWidget {
+  final Function(String name, String desc, File? photo) onSubmit;
 
-  const ProgramDetailSheet({
+  const CreateProgramSheet({
     Key? key,
-    required this.program,
+    required this.onSubmit,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController descController = TextEditingController();
+    File? selectedPhoto;
+
     return Container(
       width: double.infinity,
       height: AppSizes.bottomSheetHeight,
@@ -49,7 +55,7 @@ class ProgramDetailSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.spaceXL),
                 Text(
-                  program.name, // Tampilkan nama program
+                  'Buat Program',
                   style: AppTextStyles.heading2.copyWith(
                     color: AppColors.textPrimary,
                   ),
@@ -58,7 +64,6 @@ class ProgramDetailSheet extends StatelessWidget {
               ],
             ),
           ),
-
           // Content
           Expanded(
             child: SingleChildScrollView(
@@ -67,40 +72,63 @@ class ProgramDetailSheet extends StatelessWidget {
                 child: Column(
                   children: [
                     // Image
-                    Container(
-                      width: double.infinity,
-                      height: AppSizes.bottomSheetImageHeight,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF7F2F2),
-                        borderRadius: BorderRadius.circular(AppSizes.radiusM),
-                        image: DecorationImage(
-                          image: program.photo != null
-                              ? NetworkImage(program.photo!) // Gambar dari URL jika ada
-                              : AssetImage('assets/placeholder.jpg') as ImageProvider, // Gambar placeholder
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                  
                     SizedBox(height: AppSizes.spaceXL),
-
                     // Tampilkan deskripsi
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.only(bottom: AppSizes.paddingXL),
                       child: Column(
-                        children: program.desc.map((desc) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              desc,
-                              textAlign: TextAlign.justify,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: const Color(0xFF797979),
-                                height: 1.5,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Nama Program',
+                            style: AppTextStyles.heading3,
+                          ),
+                          const SizedBox(height: 4),
+                          TextField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                          );
-                        }).toList(),
+                          ),
+                          const SizedBox(height: AppSizes.spaceM),
+                          Text(
+                            'Deskripsi',
+                            style: AppTextStyles.heading3,
+                          ),
+                          const SizedBox(height: 4),
+                          TextField(
+                            controller: descController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            maxLines: 3,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.spaceS),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        // Image Picker implementation
+                        final pickedImage =
+                            await ImagePicker().pickImage(source: ImageSource.gallery);
+                        if (pickedImage != null) {
+                          selectedPhoto = File(pickedImage.path);
+                        }
+                      },
+                      icon: const Icon(Icons.photo),
+                      label: const Text('Pilih Foto'),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                     ),
                   ],
@@ -108,7 +136,6 @@ class ProgramDetailSheet extends StatelessWidget {
               ),
             ),
           ),
-
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
@@ -126,17 +153,23 @@ class ProgramDetailSheet extends StatelessWidget {
               ],
             ),
             child: ElevatedButton(
-              onPressed: () => Get.back(),
+              onPressed: () {
+                onSubmit(
+                  nameController.text,
+                  descController.text,
+                  selectedPhoto,
+                );
+                Get.back();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF4F4F4),
-                minimumSize:
-                    Size(double.infinity, AppSizes.bottomSheetButtonHeight),
+                minimumSize: Size(double.infinity, AppSizes.bottomSheetButtonHeight),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSizes.radiusM),
                 ),
               ),
               child: Text(
-                'Kembali',
+                'Submit',
                 style: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w600,

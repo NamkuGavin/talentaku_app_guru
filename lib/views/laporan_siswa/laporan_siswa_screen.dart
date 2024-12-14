@@ -16,14 +16,27 @@ class LaporanSiswaScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            const WelcomeSign(),
-            SizedBox(height: AppSizes.spaceXL),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const WelcomeSign(),
+              SizedBox(height: AppSizes.spaceXL),
 
-            // Class Card
-            ClassCard(classEvent: controller.classEvents[0]),
-          ],
+              // Class Cards ListView
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingXL),
+                itemCount: controller.classEvents.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: AppSizes.spaceL),
+                    child: ClassCard(classEvent: controller.classEvents[index]),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

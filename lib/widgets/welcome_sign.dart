@@ -56,12 +56,13 @@ class WelcomeSign extends StatelessWidget {
                       color: AppColors.textLight,
                     ),
                   ),
-                  Text(
+                  Obx(() => Text(
                     controller.userName,
                     style: AppTextStyles.heading1.copyWith(
                       color: AppColors.textLight,
                     ),
-                  ),
+                  )),
+                 
                 ],
               ),
             ),

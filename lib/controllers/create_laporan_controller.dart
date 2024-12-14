@@ -37,12 +37,18 @@ class CreateLaporanController extends GetxController {
   ].obs;
 
   final catatan = ''.obs;
+  var photoUrl = ''.obs;  // For storing the photo URL
   var uploadphoto = ''.obs;
   var isValidLink = true;
 
   void validateLink(String value) {
     isValidLink = value.startsWith('https://drive.google.com/');
     uploadphoto.value = value;
+    update();
+  }
+
+  void updatePhotoUrl(String value) {
+    photoUrl.value = value;
     update();
   }
 

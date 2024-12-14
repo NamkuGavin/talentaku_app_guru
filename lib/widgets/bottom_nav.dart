@@ -32,8 +32,8 @@ class BottomNav extends StatelessWidget {
               selectedColor: AppColors.primary,
             ),
             CrystalNavigationBarItem(
-              icon: IconlyBold.paper,
-              unselectedIcon: IconlyLight.paper,
+              icon: IconlyBold.folder,
+              unselectedIcon: IconlyLight.folder,
               selectedColor: AppColors.primary,
             ),
             // CrystalNavigationBarItem(

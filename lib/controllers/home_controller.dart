@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:talentaku_app_guru/apiModels/program_model.dart';
+import 'package:talentaku_app_guru/apiModels/user_model.dart';
+import 'package:talentaku_app_guru/apiservice/api_Service.dart';
 import 'package:talentaku_app_guru/models/broadcast_event.dart';
 import 'package:talentaku_app_guru/models/categories_event.dart';
 import 'package:talentaku_app_guru/models/class_event.dart';
@@ -7,8 +12,87 @@ import 'package:talentaku_app_guru/models/laporan_preview_event.dart';
 import 'package:talentaku_app_guru/controllers/laporan_siswa_controller.dart';
 
 class HomeController extends GetxController {
-  String userName = 'Khalisha';
   late LaporanSiswaController laporanController;
+  var informationList = <Program>[].obs;
+  var isLoading = false.obs;
+  var user = Rxn<UserModel>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchInformation();
+    fetchUserProfile();
+    if (!Get.isRegistered<LaporanSiswaController>()) {
+      Get.put(LaporanSiswaController());
+    }
+  }
+
+  void fetchInformation() async {
+    try {
+      isLoading(true);
+      final apiService = ApiService();
+      final programs = await apiService.fetchPrograms();
+      informationList.assignAll(programs);
+    } catch (e) {
+      print('Error fetching programs: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to load programs',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  void addProgram(String name, String desc, String photo) async {
+  try {
+    isLoading(true);
+    await ApiService.createProgram(name, desc, photo);
+    fetchInformation(); // Menyegarkan daftar program
+  } catch (e) {
+    print('Error adding program: $e');
+    Get.snackbar(
+      'Error',
+      'Failed to add program',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  } finally {
+    isLoading(false);
+  }
+}
+
+
+  void fetchUserProfile() async {
+    try {
+      isLoading(true);
+      final userProfile = await ApiService.fetchUserProfile();
+      user.value = userProfile; 
+    } catch (e) {
+      print('Error fetching user profile: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to load user profile',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  String get userName => user.value?.username ?? 'Guest';
+  String get roles {
+  if (user.value?.roles.isNotEmpty ?? false) {
+    return user.value!.roles.first; 
+  }
+  return 'Guest'; 
+  }
+
+
+
 
   List<Event> events = [
     Event(name: 'Hari Kemerdekaan', date: '17 Agustus 2024'),
@@ -17,50 +101,65 @@ class HomeController extends GetxController {
   ];
 
   List<CategoryEvent> categories = [
-    CategoryEvent(
+    CategoryEvent( 
       title: 'Kelas Anda',
       image: 'images/boy1.png',
     ),
+    
     CategoryEvent(
       title: 'Fitur Tambahan',
+      image: 'images/boy1.png',
+    ),
+
+    CategoryEvent(
+      title: 'Program Tambahan',
       image: 'images/boy2.png',
     ),
 
   ];
 
-  List<ClassEvent> classEvents = [
+  // Make classEvents observable
+  final classEvents = <ClassEvent>[
     ClassEvent(
       groupName: 'Kelompok Pelangi',
       ageRange: '2 - 3 Tahun',
       image: 'images/abc.png',
     ),
-  ];
+    ClassEvent(
+      groupName: 'Kelompok Bintang',
+      ageRange: '3 - 4 Tahun',
+      image: 'images/abc.png',
+    ),
+    ClassEvent(
+      groupName: 'Kelompok Bulan',
+      ageRange: '4 - 5 Tahun',
+      image: 'images/abc.png',
+    ),
+  ].obs;
 
 
   List<Map<String, dynamic>> schoolFeatures = [
     {
-      'title': 'Laporan Progress Siswa',
-      'description': 'Pantau perkembangan siswa secara real-time dengan laporan digital yang mudah diakses',
-      'icon': Icons.assessment_outlined,
-      'color': Color(0xFF6C63FF),
-    },
-    {
       'title': 'Aktivitas di Rumah',
-      'description': 'Aktivitas edukatif yang menyenangkan untuk dilakukan bersama orang tua di rumah',
       'icon': Icons.home_outlined,
       'color': Color(0xFF00C853),
     },
     {
       'title': 'Program Sekolah',
-      'description': 'Informasi lengkap tentang layanan dan program tambahan sekolah',
+
       'icon': Icons.school_outlined,
       'color': Color(0xFFFF6B6B),
     },
     {
       'title': 'Pengumuman & Agenda',
-      'description': 'Dapatkan informasi terkini tentang kegiatan dan agenda sekolah',
       'icon': Icons.campaign_outlined,
       'color': Color(0xFFFFA726),
+    },
+
+        {
+      'title': 'Notifikasi Tugas',
+      'icon': Icons.notifications_outlined,
+      'color': Color(0xFF87CEEB),
     },
   ];
 
@@ -71,17 +170,4 @@ class HomeController extends GetxController {
     return laporanController.filteredLaporan.take(3).toList();
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    // Memastikan LaporanSiswaController sudah diinisialisasi
-    if (!Get.isRegistered<LaporanSiswaController>()) {
-      Get.put(LaporanSiswaController());
-    }
-  }
-
-  void updateUserName(String newName) {
-    userName = newName;
-    update();
-  }
 }

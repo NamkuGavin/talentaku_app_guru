@@ -7,7 +7,6 @@ import 'package:talentaku_app_guru/controllers/create_laporan_controller.dart';
 import 'package:talentaku_app_guru/widgets/date_semester_row.dart';
 import 'package:talentaku_app_guru/widgets/laporan_form_section.dart';
 import 'package:talentaku_app_guru/widgets/catatan_section.dart';
-import 'package:talentaku_app_guru/widgets/photo_upload.dart';
 import 'package:talentaku_app_guru/widgets/photo_upload_section.dart';
 import 'package:talentaku_app_guru/widgets/submit_button.dart';
 import 'package:talentaku_app_guru/widgets/info_popup.dart';
@@ -63,9 +62,7 @@ class CreateLaporanScreen extends StatelessWidget {
                 onChanged: (value) => controller.catatan.value = value,
               ),
               SizedBox(height: AppSizes.spaceL),
-              PhotoUpload(
-                onChanged: (value) => controller.uploadphoto.value = value,
-              ),
+              PhotoUploadSection(),
               SizedBox(height: AppSizes.spaceXL),
               SubmitButton(
                 onPressed: () => _showConfirmationDialog(context, controller),
@@ -100,7 +97,8 @@ class CreateLaporanScreen extends StatelessWidget {
       BuildContext context, CreateLaporanController controller) {
     InfoPopup.show(
       title: 'Konfirmasi Pengiriman',
-      message: 'Apakah Anda yakin ingin mengirim laporan ini?\nPastikan semua data telah terisi dengan benar.',
+      message:
+          'Apakah Anda yakin ingin mengirim laporan ini?\nPastikan semua data telah terisi dengan benar.',
       icon: Icons.help_outline,
       iconColor: AppColors.secondary,
       actions: [

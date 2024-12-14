@@ -50,12 +50,12 @@ class LoginScreen extends StatelessWidget {
                       SizedBox(height: AppSizes.spaceXL),
 
                       // Login button
-                      ReusableButton(
-                        buttonText: 'Login',
-                    
-                        icon: Icons.arrow_forward_ios_rounded,
-                        onPressed: () => controller.onLoginPressed(context), // Logika login di controller
-                      ),
+                      Obx(() => ReusableButton(
+                            buttonText: 'Login',
+                            icon: Icons.arrow_forward_ios_rounded,
+                            onPressed: () => controller.onLoginPressed(context),
+                            isLoading: controller.isLoading.value,
+                          )),
                     ],
                   ),
                 ),

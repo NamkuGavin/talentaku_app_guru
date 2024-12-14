@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class UserModel {
-  final String name;
-  final String nis;
-  final String birthPlaceAndDate;
-  final String address;
-  final String group;
+// class UserModel {
+//   final String name;
+//   final String nis;
+//   final String birthPlaceAndDate;
+//   final String address;
+//   final String group;
 
-  UserModel({
-    required this.name,
-    required this.nis,
-    required this.birthPlaceAndDate,
-    required this.address,
-    required this.group,
-  });
-}
+//   UserModel({
+//     required this.name,
+//     required this.nis,
+//     required this.birthPlaceAndDate,
+//     required this.address,
+//     required this.group,
+//   });
+// }
 
 class TextPair {
   final String primaryText;
@@ -32,4 +32,8 @@ class TextPair {
     required this.alignment,
     this.icon, // Add optional icon
   });
+
+  
 }
+
+

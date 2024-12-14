@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:talentaku_app_guru/constants/app_colors.dart';
 import 'package:talentaku_app_guru/constants/app_sizes.dart';
-import 'package:talentaku_app_guru/constants/app_text_styles.dart';
 import 'package:talentaku_app_guru/controllers/home_controller.dart';
+import 'package:talentaku_app_guru/widgets/program_tambahan_card.dart';
 import 'package:talentaku_app_guru/widgets/welcome_sign.dart';
-import 'package:talentaku_app_guru/widgets/laporan_preview_card.dart';
 import 'package:talentaku_app_guru/widgets/categories_line.dart';
 import 'package:talentaku_app_guru/widgets/feature_card.dart';
 import 'package:talentaku_app_guru/widgets/home_class_card.dart';
@@ -33,6 +32,36 @@ class HomeScreen extends StatelessWidget {
               
               SizedBox(height: AppSizes.spaceXL),
 
+              // Program Tambahan Section
+              CategoriesLine(categoryEvent: controller.categories[2]),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingXL),
+                child: Obx(
+                  () {
+                    if (controller.isLoading.value) {
+                      return Center(child: CircularProgressIndicator()); 
+                    } else {
+                      return SizedBox(
+                        height: AppSizes.horizontalListHeight,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: controller.informationList.length,
+                          itemBuilder: (context, index) {
+                            final program = controller.informationList[index];
+                            return ProgramCard(
+                              program: program,
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              SizedBox(height: AppSizes.spaceXL),
+
+
               // Fitur Aplikasi Section
               CategoriesLine(categoryEvent: controller.categories[1]),
               Padding(
@@ -51,7 +80,6 @@ class HomeScreen extends StatelessWidget {
                     final feature = controller.schoolFeatures[index];
                     return FeatureCard(
                       title: feature['title'],
-                      description: feature['description'],
                       icon: feature['icon'],
                       color: feature['color'],
                     );
