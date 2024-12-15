@@ -17,7 +17,7 @@ class Grade {
   final bool isActive;
   final Teacher teacher;
   final Level level;
-  final String members;
+  final dynamic members;
 
   Grade({
     required this.id,
@@ -30,6 +30,18 @@ class Grade {
   });
 
   factory Grade.fromJson(Map<String, dynamic> json) {
+    print('Members raw data: ${json['members']}'); 
+    var membersData = json['members'];
+    dynamic processedMembers;
+    
+    if (membersData is String) {
+      processedMembers = membersData;
+    } else if (membersData is List) {
+      processedMembers = List<dynamic>.from(membersData);
+    } else {
+      processedMembers = []; 
+    }
+
     return Grade(
       id: json['id'],
       name: json['name'],
@@ -37,7 +49,7 @@ class Grade {
       isActive: json['is_active'],
       teacher: Teacher.fromJson(json['teacher']),
       level: Level.fromJson(json['level']),
-      members: json['members'],
+      members: processedMembers,
     );
   }
 }

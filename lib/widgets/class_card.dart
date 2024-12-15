@@ -30,60 +30,40 @@ class ClassCard extends StatelessWidget {
               height: AppSizes.classCardHeight,
               decoration: AppDecorations.classCardDecoration,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: AppSizes.paddingXL, top: AppSizes.paddingXL),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    classEvent.groupName,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: AppSizes.paddingXS),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_sharp,
-                        size: AppSizes.iconS,
-                        color: AppColors.primaryDark,
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: AppSizes.paddingXL,
+                  right: AppSizes.classImageSize + AppSizes.paddingXL,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      classEvent.groupName,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
-                      SizedBox(width: AppSizes.paddingXS),
-                      Text(
-                        classEvent.ageRange,
-                        style: AppTextStyles.bodySmall.copyWith(
+                    ),
+                    SizedBox(height: AppSizes.paddingXS),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today_sharp,
+                          size: AppSizes.iconS,
                           color: AppColors.primaryDark,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: AppSizes.paddingXL,
-                top: AppSizes.paddingXL * 3.6,
-              ),
-              child: Row(
-                children: List.generate(
-                  4,
-                  (index) => Container(
-                    width: AppSizes.avatarIconSize,
-                    height: AppSizes.avatarIconSize,
-                    margin: EdgeInsets.only(left: AppSizes.paddingXS),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey,
+                        SizedBox(width: AppSizes.paddingXS),
+                        Text(
+                          classEvent.ageRange,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.primaryDark,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Icon(
-                      Icons.person,
-                      size: AppSizes.iconM,
-                      color: AppColors.cardBackground,
-                    ),
-                  ),
+                  ],
                 ),
               ),
             ),
