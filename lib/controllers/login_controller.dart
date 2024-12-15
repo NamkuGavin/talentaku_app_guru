@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talentaku_app_guru/apiModels/user_model.dart';
 import 'package:talentaku_app_guru/apiservice/api_Service.dart';
 import 'package:talentaku_app_guru/controllers/class_detail_controller.dart';
@@ -144,6 +145,36 @@ class LoginController extends GetxController {
     );
   }
 
+  // Function to pick image and upload it
+  Future<void> pickAndUploadImage(BuildContext context) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    final picker = ImagePicker();
+    final XFile? pickedFile =
+    await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      profileImage.value = pickedFile.path;
+      isImagePicked.value = true;
+
+      try {
+        // Upload image after it is picked
+        var response =
+        await ApiService.uploadProfilePhoto(file: File(pickedFile.path), token: pref.getString('token_user').toString());
+
+        if (response.containsKey('data')) {
+          Get.snackbar('Success', 'Photo uploaded successfully');
+          String uploadedPhotoUrl = response['data']['photo'];
+          // Update user model with the new photo URL
+          user.value?.photo = uploadedPhotoUrl;
+          profileImage.value = uploadedPhotoUrl; // Update profile image in UI
+        } else {
+          Get.snackbar('Error', 'Failed to upload photo');
+        }
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to upload photo');
+      }
+    }
+  }
+
   ProfileImagePickerModel getProfileImagePickerModel(BuildContext context) {
     return ProfileImagePickerModel(
       image: isImagePicked.value
@@ -226,6 +257,7 @@ class LoginController extends GetxController {
     final picker = ImagePicker();
     final XFile? pickedFile =
         await picker.pickImage(source: ImageSource.camera);
+    await pickAndUploadImage(context);
 
     if (pickedFile != null) {
       profileImage.value = pickedFile.path;
@@ -237,6 +269,7 @@ class LoginController extends GetxController {
     final picker = ImagePicker();
     final XFile? pickedFile =
         await picker.pickImage(source: ImageSource.gallery);
+    await pickAndUploadImage(context);
 
     if (pickedFile != null) {
       profileImage.value = pickedFile.path;

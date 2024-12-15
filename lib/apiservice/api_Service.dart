@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talentaku_app_guru/apiModels/grade_model.dart';
 import 'package:talentaku_app_guru/apiModels/grade_detail_response.dart';
 import 'package:talentaku_app_guru/apiModels/program_model.dart';
 import 'package:talentaku_app_guru/apiModels/user_model.dart';
+import 'package:path/path.dart';
+import 'package:http_parser/http_parser.dart';
 
 
 class ApiService {
@@ -62,19 +65,50 @@ class ApiService {
   }
 
   // Upload Profile Photo API
-  static Future<Map<String, dynamic>> uploadProfilePhoto(File photo) async {
-    final url = Uri.parse('$baseUrl/api/v2/user/update-photo');
-    final headers = await _getHeaders();
-    final request = http.MultipartRequest('POST', url)
-      ..headers.addAll(headers)
-      ..files.add(await http.MultipartFile.fromPath('photo', photo.path));
+  // static Future<Map<String, dynamic>> uploadProfilePhoto(File photo) async {
+  //   final url = Uri.parse('$baseUrl/api/v2/user/update-photo');
+  //   final headers = await _getHeaders();
+  //   final request = http.MultipartRequest('POST', url)
+  //     ..headers.addAll(headers)
+  //     ..files.add(await http.MultipartFile.fromPath('photo', photo.path));
+  //
+  //   final response = await request.send();
+  //
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(await response.stream.bytesToString());
+  //   } else {
+  //     throw Exception('Failed to upload photo');
+  //   }
+  // }
 
-    final response = await request.send();
+  static Future uploadProfilePhoto(
+      {required File file,
+        required String token}) async {
+    var mimeType = lookupMimeType(file.path);
+    var bytes = await File.fromUri(Uri.parse(file.path)).readAsBytes();
+    Map<String, String> headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+
+    http.MultipartRequest request = new http.MultipartRequest(
+        "POST",
+        Uri.parse('$baseUrl/api/v2/user/update-photo'));
+
+    http.MultipartFile multipartFile = await http.MultipartFile.fromBytes(
+        'photo', bytes,
+        filename: basename(file.path),
+        contentType: MediaType.parse(mimeType.toString()));
+    request.headers.addAll(headers);
+    request.files.add(multipartFile);
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 200) {
-      return jsonDecode(await response.stream.bytesToString());
+      return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to upload photo');
+      print(response.statusCode);
+      throw HttpException('request error code ${response.statusCode}');
     }
   }
 
