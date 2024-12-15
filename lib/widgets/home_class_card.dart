@@ -7,12 +7,7 @@ import 'package:talentaku_app_guru/models/class_event.dart';
 import 'package:talentaku_app_guru/controllers/navigation_controller.dart';
 
 class HomeClassCard extends StatelessWidget {
-  final ClassEvent classEvent;
 
-  const HomeClassCard({
-    Key? key,
-    required this.classEvent,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +53,7 @@ class HomeClassCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Lihat detail kelas ${classEvent.groupName}',
+                        'Lihat detail kelas ',
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.textPrimary.withOpacity(0.7),
                         ),

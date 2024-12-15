@@ -3,28 +3,35 @@ import 'package:get/get.dart';
 import 'package:talentaku_app_guru/constants/app_colors.dart';
 import 'package:talentaku_app_guru/constants/app_sizes.dart';
 import 'package:talentaku_app_guru/constants/app_text_styles.dart';
+import 'package:talentaku_app_guru/controllers/detail_siswa_controller.dart';
 import 'package:talentaku_app_guru/widgets/history_filter.dart';
 import 'package:talentaku_app_guru/widgets/laporan_siswa_card.dart';
-import 'package:talentaku_app_guru/controllers/laporan_siswa_controller.dart';
 import 'package:talentaku_app_guru/widgets/create_report_button.dart';
 import 'package:talentaku_app_guru/views/laporan_siswa/create_laporan_screen.dart';
+import 'package:talentaku_app_guru/apiModels/grade_detail_response.dart';
 
 class DetailSiswaScreen extends StatelessWidget {
-  final Map<String, String> student;
+  final Member student;
   
   const DetailSiswaScreen({
     Key? key,
     required this.student,
   }) : super(key: key);
 
+  Map<String, String> get studentMap => {
+    'name': student.fullname,
+    'username': student.username,
+    'photo': student.photo ?? '',
+  };
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LaporanSiswaController());
+    final controller = Get.put(DetailSiswaController());
 
     return Scaffold(
       backgroundColor: AppColors.primary,
       floatingActionButton: CreateReportButton(
-        onPressed: () => Get.to(() => CreateLaporanScreen(student: student)),
+        onPressed: () => Get.to(() => CreateLaporanScreen(student: studentMap)),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SafeArea(
@@ -47,10 +54,11 @@ class DetailSiswaScreen extends StatelessWidget {
                         onPressed: () => Get.back(),
                       ),
                       Text(
-                        'Laporan ${student['name']}',
+                        'Laporan ${student.fullname}',
                         style: AppTextStyles.heading2.copyWith(
                           color: AppColors.textLight,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

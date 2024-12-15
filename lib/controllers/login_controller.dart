@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:talentaku_app_guru/apiModels/user_model.dart';
 import 'package:talentaku_app_guru/apiservice/api_Service.dart';
+import 'package:talentaku_app_guru/controllers/class_detail_controller.dart';
+import 'package:talentaku_app_guru/controllers/grade_controller.dart';
 import 'package:talentaku_app_guru/controllers/home_controller.dart';
+import 'package:talentaku_app_guru/controllers/profile_controller.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
 import '../models/login_models.dart';
@@ -43,11 +46,46 @@ class LoginController extends GetxController {
         userData['token'] = response['token'];
         userData['fcm_token'] = response['fcm_token'];
 
-        user.value = UserModel.fromJson(userData);
+        // Create temporary user model to check roles
+        final tempUser = UserModel.fromJson(userData);
+        
+        // Check if user has valid role (guru KB or guru SD)
+        bool hasValidRole = tempUser.roles.any((role) => 
+          role.toLowerCase() == 'guru kb' || role.toLowerCase() == 'guru sd'
+        );
+
+        if (!hasValidRole) {
+          Get.snackbar(
+            'Error', 
+            'Access denied. Only Guru KB and Guru SD roles are allowed.',
+            backgroundColor: Colors.red,
+            colorText: Colors.white
+          );
+          return;
+        }
+
+        user.value = tempUser;
 
         if (user.value?.photo != null) {
           profileImage.value = user.value!.photo!;
         }
+
+        // Delete any existing controllers to ensure fresh state
+        Get.delete<HomeController>(force: true);
+        Get.delete<ProfileController>(force: true);
+
+        // Create new instances of controllers with fresh state
+        final homeController = Get.put(HomeController());
+        final profileController = Get.put(ProfileController());
+
+        // Initialize the new controllers with the current user data
+        homeController.user.value = user.value;
+        profileController.user.value = user.value;
+
+        // Fetch fresh data for the new user
+        homeController.fetchInformation();
+        homeController.fetchUserProfile();
+        profileController.fetchUserData();
 
         Get.snackbar('Success', 'Login Successful');
         Get.offAll(() => LoginPickImage());
@@ -61,10 +99,6 @@ class LoginController extends GetxController {
       isLoading.refresh();
     }
   }
-
-
-
-
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -242,15 +276,12 @@ class LoginController extends GetxController {
     );
   }
 
-
   void updateCredentials() {
     loginModel.value.updateLoginState(
       usernameController.text,
       passwordController.text,
     );
   }
-
-
 
   void onLoginPressed(BuildContext context) {
     final username = usernameController.text.trim();
@@ -270,6 +301,42 @@ class LoginController extends GetxController {
   }
 
   void onLogoutPressed(BuildContext context) async {
+    // Clear all user data from LoginController
+    user.value = null;
+    profileImage.value = '';
+
+    // Clear all controllers that might have user data
+    if (Get.isRegistered<HomeController>()) {
+      final homeController = Get.find<HomeController>();
+      homeController.user.value = null;
+      homeController.informationList.clear();
+    }
+
+    if (Get.isRegistered<ProfileController>()) {
+      final profileController = Get.find<ProfileController>();
+      profileController.user.value = null;
+    }
+
+    // Clear grade-related controllers
+if (Get.isRegistered<GradeController>()) {
+  final gradeController = Get.find<GradeController>();
+  gradeController.classEvents.clear();
+  Get.delete<GradeController>(force: true);
+}
+if (Get.isRegistered<ClassDetailController>()) {
+  final classDetailController = Get.find<ClassDetailController>();
+  classDetailController.gradeDetail.value = null;
+  Get.delete<ClassDetailController>(force: true);
+}
+
+    
+
+    // Delete all GetX controllers except LoginController
+    Get.delete<HomeController>(force: true);
+    Get.delete<ProfileController>(force: true);
+    Get.delete<GradeController>(force: true);
+    Get.delete<ClassDetailController>(force: true);
+
     await ApiService.removeToken(); // Remove the stored token
     resetForm();
     Get.snackbar(

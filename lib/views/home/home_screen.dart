@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:talentaku_app_guru/constants/app_colors.dart';
 import 'package:talentaku_app_guru/constants/app_sizes.dart';
+import 'package:talentaku_app_guru/controllers/detail_siswa_controller.dart';
 import 'package:talentaku_app_guru/controllers/home_controller.dart';
 import 'package:talentaku_app_guru/widgets/program_tambahan_card.dart';
 import 'package:talentaku_app_guru/widgets/welcome_sign.dart';
@@ -28,7 +29,7 @@ class HomeScreen extends StatelessWidget {
 
               // Kelas Anda Section
               CategoriesLine(categoryEvent: controller.categories[0]),
-              HomeClassCard(classEvent: controller.classEvents[0]),
+              HomeClassCard(),  
               
               SizedBox(height: AppSizes.spaceXL),
 

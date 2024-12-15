@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talentaku_app_guru/apiModels/grade_model.dart';
+import 'package:talentaku_app_guru/apiModels/grade_detail_response.dart';
 import 'package:talentaku_app_guru/apiModels/program_model.dart';
 import 'package:talentaku_app_guru/apiModels/user_model.dart';
 
 
 class ApiService {
-  static const String baseUrl = 'https://eefa-103-118-96-6.ngrok-free.app';
+  static const String baseUrl = 'https://144d-103-118-96-6.ngrok-free.app';
   static const String _tokenKey = 'auth_token';
 
   static Future<void> setToken(String token) async {
@@ -134,7 +136,42 @@ class ApiService {
     }
   }
 
-  // Grade endpoints
+  // Get teacher's grades
+  static Future<GradeResponse> getTeacherGrades() async {
+    try {
+      final headers = await _getHeaders();
+      final url = Uri.parse('$baseUrl/api/v2/grade/show-teacher');
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return GradeResponse.fromJson(responseData);
+      } else {
+        throw Exception('gagal untuk load kelas anda');
+      }
+    } catch (e) {
+      throw Exception('Error fetching grades: $e');
+    }
+  }
+
+  // Get grade detail
+  static Future<GradeDetailResponse> getGradeDetail(int gradeId) async {
+    try {
+      final headers = await _getHeaders();
+      final url = Uri.parse('$baseUrl/api/v2/grade/$gradeId');
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return GradeDetailResponse.fromJson(responseData);
+      } else {
+        throw Exception('gagal untuk load kelas anda');
+      }
+    } catch (e) {
+      throw Exception('Error fetching grade detail: $e');
+    }
+  }
+
   
 
   

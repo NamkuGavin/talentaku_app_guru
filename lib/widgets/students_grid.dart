@@ -4,9 +4,10 @@ import 'package:talentaku_app_guru/constants/app_colors.dart';
 import 'package:talentaku_app_guru/constants/app_sizes.dart';
 import 'package:talentaku_app_guru/constants/app_text_styles.dart';
 import 'package:talentaku_app_guru/views/laporan_siswa/detail_siswa_screen.dart';
+import 'package:talentaku_app_guru/apiModels/grade_detail_response.dart';
 
 class StudentsGrid extends StatelessWidget {
-  final List<Map<String, String>> students;
+  final List<Member> students;
 
   const StudentsGrid({
     Key? key,
@@ -20,9 +21,10 @@ class StudentsGrid extends StatelessWidget {
       itemCount: students.length,
       separatorBuilder: (context, index) => SizedBox(height: AppSizes.spaceM),
       itemBuilder: (context, index) {
+        final student = students[index];
         return GestureDetector(
           onTap: () {
-            Get.to(() => DetailSiswaScreen(student: students[index]));
+            Get.to(() => DetailSiswaScreen(student: student));
           },
           child: Container(
             padding: EdgeInsets.all(AppSizes.paddingL),
@@ -37,13 +39,23 @@ class StudentsGrid extends StatelessWidget {
                   height: 45,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary.withOpacity(0.2),
+                    image: student.photo != null
+                        ? DecorationImage(
+                            image: NetworkImage(student.photo!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                    color: student.photo == null
+                        ? AppColors.primary.withOpacity(0.2)
+                        : null,
                   ),
-                  child: Icon(
-                    Icons.person,
-                    color: AppColors.primary,
-                    size: AppSizes.iconL,
-                  ),
+                  child: student.photo == null
+                      ? Icon(
+                          Icons.person,
+                          color: AppColors.primary,
+                          size: AppSizes.iconL,
+                        )
+                      : null,
                 ),
                 SizedBox(width: AppSizes.spaceM),
                 Expanded(
@@ -51,28 +63,24 @@ class StudentsGrid extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        students[index]['name']!,
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.textPrimary,
+                        student.username,
+                        style: AppTextStyles.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: AppSizes.spaceXS),
+                      SizedBox(height: 2),
                       Text(
-                        'Siswa',
+                        student.fullname,
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: Colors.grey,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  color: AppColors.primary,
-                  size: AppSizes.iconL,
                 ),
               ],
             ),

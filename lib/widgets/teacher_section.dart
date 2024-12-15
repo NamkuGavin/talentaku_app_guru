@@ -4,7 +4,12 @@ import 'package:talentaku_app_guru/constants/app_sizes.dart';
 import 'package:talentaku_app_guru/constants/app_text_styles.dart';
 
 class TeacherSection extends StatelessWidget {
-  const TeacherSection({Key? key}) : super(key: key);
+  final String? teacher;
+
+  const TeacherSection({
+    Key? key,
+    required this.teacher,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +46,17 @@ class TeacherSection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Bu Sekar',
+                  teacher ?? 'Loading...',
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-        
         ],
       ),
     );

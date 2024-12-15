@@ -1,4 +1,6 @@
 class ClassEvent {
+
+  
   final String groupName;
   final String ageRange;
   final String image;

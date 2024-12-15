@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:intl/intl.dart';
 import 'package:talentaku_app_guru/models/laporan_preview_event.dart';
 import 'package:talentaku_app_guru/widgets/date_picker_card.dart';
-import 'package:intl/intl.dart';
 
+class DetailSiswaController extends GetxController{
 
-class LaporanSiswaController extends GetxController {
-  final RxList<LaporanPreviewEvent> filteredLaporan =
+    final RxList<LaporanPreviewEvent> filteredLaporan =
       <LaporanPreviewEvent>[].obs;
 
 
@@ -77,5 +78,4 @@ void showDatePicker(BuildContext context) async {
       },
     );
   }
-  
 }

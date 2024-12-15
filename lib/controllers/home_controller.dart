@@ -9,10 +9,9 @@ import 'package:talentaku_app_guru/models/broadcast_event.dart';
 import 'package:talentaku_app_guru/models/categories_event.dart';
 import 'package:talentaku_app_guru/models/class_event.dart';
 import 'package:talentaku_app_guru/models/laporan_preview_event.dart';
-import 'package:talentaku_app_guru/controllers/laporan_siswa_controller.dart';
 
 class HomeController extends GetxController {
-  late LaporanSiswaController laporanController;
+
   var informationList = <Program>[].obs;
   var isLoading = false.obs;
   var user = Rxn<UserModel>();
@@ -22,9 +21,7 @@ class HomeController extends GetxController {
     super.onInit();
     fetchInformation();
     fetchUserProfile();
-    if (!Get.isRegistered<LaporanSiswaController>()) {
-      Get.put(LaporanSiswaController());
-    }
+
   }
 
   void fetchInformation() async {
@@ -118,24 +115,7 @@ class HomeController extends GetxController {
 
   ];
 
-  // Make classEvents observable
-  final classEvents = <ClassEvent>[
-    ClassEvent(
-      groupName: 'Kelompok Pelangi',
-      ageRange: '2 - 3 Tahun',
-      image: 'images/abc.png',
-    ),
-    ClassEvent(
-      groupName: 'Kelompok Bintang',
-      ageRange: '3 - 4 Tahun',
-      image: 'images/abc.png',
-    ),
-    ClassEvent(
-      groupName: 'Kelompok Bulan',
-      ageRange: '4 - 5 Tahun',
-      image: 'images/abc.png',
-    ),
-  ].obs;
+
 
 
   List<Map<String, dynamic>> schoolFeatures = [
@@ -163,11 +143,7 @@ class HomeController extends GetxController {
     },
   ];
 
-  // Getter untuk mendapatkan 3 laporan terbaru
-  List<LaporanPreviewEvent> get laporanPreviews {
-    laporanController = Get.find<LaporanSiswaController>();
-    // Mengambil 3 laporan terbaru dari LaporanSiswaController
-    return laporanController.filteredLaporan.take(3).toList();
-  }
+
+
 
 }
