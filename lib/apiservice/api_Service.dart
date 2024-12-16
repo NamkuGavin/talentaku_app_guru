@@ -193,15 +193,20 @@ class ApiService {
     try {
       final headers = await _getHeaders();
       final url = Uri.parse('$baseUrl/api/v2/grade/$gradeId');
+      print('Fetching grade detail from: $url');
       final response = await http.get(url, headers: headers);
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        print('Parsed response data: $responseData');
         return GradeDetailResponse.fromJson(responseData);
       } else {
-        throw Exception('gagal untuk load kelas anda');
+        throw Exception('Failed to load grade detail. Status code: ${response.statusCode}');
       }
     } catch (e) {
+      print('Error in getGradeDetail: $e');
       throw Exception('Error fetching grade detail: $e');
     }
   }
